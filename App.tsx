@@ -211,10 +211,10 @@ const App: React.FC = () => {
 
   const workflowPhases = [
     { phase: "Phase_01", title: "Visual ingestion", desc: "The auditor ingests the target interface, mapping visual hierarchy, DOM structure, and latent UI signals to establish a forensic baseline." },
-    { phase: "Phase_02", title: "Heuristic interrogation", desc: "The system interrogates the extracted structure against a library of known deceptive heuristics, flagging patterns of obstruction and sneaking." },
-    { phase: "Phase_03", title: "Cognitive defense mapping", desc: "Reasoning models evaluate identifying exploits of cognitive biases—such as Sunk Cost or Scarcity—to quantify the psychological load on the end user." },
-    { phase: "Phase_04", title: "Regulatory cross-check", desc: "Audit results are cross-referenced with major digital safety frameworks, specifically the EU AI Act and GDPR, to provide forensic citations." },
-    { phase: "Phase_05", title: "Ethical remediation", desc: "The engine generates clean, non-coercive code variants and business arguments for ethical transition based on the forensic evidence collected." }
+    { phase: "Phase_02", title: "Heuristic interrogation", desc: "The auditor ingests the target interface, mapping visual hierarchy, DOM structure, and latent UI signals to establish a forensic baseline." },
+    { phase: "Phase_03", title: "Cognitive defense mapping", desc: "The auditor ingests the target interface, mapping visual hierarchy, DOM structure, and latent UI signals to establish a forensic baseline." },
+    { phase: "Phase_04", title: "Regulatory cross-check", desc: "The auditor ingests the target interface, mapping visual hierarchy, DOM structure, and latent UI signals to establish a forensic baseline." },
+    { phase: "Phase_05", title: "Ethical remediation", desc: "The auditor ingests the target interface, mapping visual hierarchy, DOM structure, and latent UI signals to establish a forensic baseline." }
   ];
 
   const progressPercent = (loadingStep / workflowPhases.length) * 100;
@@ -371,36 +371,27 @@ const App: React.FC = () => {
               </div>
             </section>
             
-            <section className="px-4 md:px-12 mt-12 max-w-7xl mx-auto w-full">
-              <div className="bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000] rounded-none overflow-hidden transition-all">
-                <button 
-                  onClick={() => setIsPlanExpanded(!isPlanExpanded)} 
-                  className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors"
-                >
-                  <h3 className="text-xl md:text-2xl font-black font-spacegrotesk italic tracking-tight uppercase">
-                    {isPlanExpanded ? 'Hide Forensic Protocol' : 'Show Forensic Protocol'}
-                  </h3>
-                  {isPlanExpanded ? <ChevronUp className="text-black" strokeWidth={3} /> : <ChevronDown className="text-black" strokeWidth={3} />}
+            <section className="px-4 md:px-12 mt-12">
+              <div className="border-t-[3px] border-black pt-6 mb-10">
+                <button onClick={() => setIsPlanExpanded(!isPlanExpanded)} className="flex items-center gap-2 font-black uppercase text-sm tracking-widest transition-all">
+                  <Triangle size={10} className={`text-black fill-black transition-transform ${isPlanExpanded ? '' : 'rotate-90'}`} />
+                  {isPlanExpanded ? 'Hide the plan' : 'Show the plan'}
                 </button>
-                
-                {isPlanExpanded && (
-                  <div className="px-6 pb-10 animate-in slide-in-from-top-2 duration-300">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-4">
-                      {workflowPhases.map((phase, i) => (
-                        <div key={i} className="bg-[#F4F4F0] border-[3px] border-black shadow-[6px_6px_0_0_#000] p-6 space-y-4 rounded-none h-full">
-                          <div className="space-y-1">
-                            <h4 className="font-mono text-[10px] font-black uppercase opacity-40">{phase.phase}</h4>
-                            <h5 className="font-black text-lg md:text-xl text-[#42BE65] font-spacegrotesk leading-none italic uppercase tracking-tighter">{phase.title}</h5>
-                          </div>
-                          <p className="text-xs md:text-sm font-bold leading-relaxed text-gray-700 italic font-body">{phase.desc}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
+              {isPlanExpanded && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 animate-in fade-in slide-in-from-top-4 duration-500">
+                  {workflowPhases.map((phase, i) => (
+                    <div key={i} className="bg-white border-[3px] border-black shadow-[8px_8px_0_0_#000] p-8 space-y-4 rounded-none min-h-[220px]">
+                      <div className="space-y-1">
+                        <h4 className="font-bold text-lg">{phase.phase}</h4>
+                        <h5 className="font-black text-xl text-[#42BE65] font-spacegrotesk leading-none">{phase.title}</h5>
+                      </div>
+                      <p className="text-sm font-medium leading-relaxed text-gray-700">{phase.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
-
             <section className="px-4 md:px-12 mt-20 grid grid-cols-1 md:grid-cols-3 gap-12 border-t-[3px] border-black pt-10">
               <div className="space-y-2">
                 <h6 className="font-bold text-sm tracking-wider uppercase">// Manipulation index</h6>
