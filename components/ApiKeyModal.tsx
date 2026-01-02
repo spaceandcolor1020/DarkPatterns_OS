@@ -1,90 +1,106 @@
-import React, { useState } from 'react';
-import { Lock, ExternalLink, Cpu, Key, ChevronDown, Zap } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 
 interface ApiKeyModalProps {
-  onAuthorized: () => void;
+  onVerify: (key: string) => void;
 }
 
-const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ onAuthorized }) => {
-  const [apiKeyInput, setApiKeyInput] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
+const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ onVerify }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [inputKey, setInputKey] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSaveKey = () => {
-    if (!apiKeyInput.trim()) return;
+  useEffect(() => {
+    // Check if key exists in local storage or env
+    const storedKey = localStorage.getItem('gemini_api_key');
+    const envKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+    if (storedKey || envKey) {
+      setIsOpen(false);
+    } else {
+      setIsOpen(true);
+    }
+  }, []);
+
+  const handleSave = () => {
+    if (!inputKey.trim().startsWith('AIza')) {
+       // simple validation check for Google keys which usually start with AIza
+       // but we can be lenient or strict. Let's just check length.
+       if (inputKey.length < 10) {
+         setError('Invalid key format. Please check your input.');
+         return;
+       }
+    }
     
-    setIsSaving(true);
-    // Save to localStorage
-    localStorage.setItem('gemini_api_key', apiKeyInput.trim());
-    
-    // Trigger window reload to re-initialize the app with the new key
+    localStorage.setItem('gemini_api_key', inputKey);
+    // Reload to trigger the app's initialization logic
     window.location.reload();
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-[100] flex items-center justify-center p-4">
-      <div className="bg-white border-[3px] border-black p-8 w-full max-w-lg shadow-[16px_16px_0px_#000] relative animate-in zoom-in-95 duration-300 rounded-none">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+      <div className="bg-white border-[3px] border-black w-full max-w-lg shadow-[8px_8px_0px_#000]">
         
-        {/* Header Section */}
-        <div className="flex items-center gap-3 mb-6 border-b-[3px] border-black pb-4">
-          <Cpu size={32} className="text-[#42BE65]" strokeWidth={3} />
-          <h2 className="text-3xl font-black font-spacegrotesk leading-none tracking-tighter uppercase italic">
-            INITIALIZE FORENSIC ENGINE
-          </h2>
+        {/* Header */}
+        <div className="bg-black text-white p-4 font-bold font-mono text-lg flex justify-between items-center">
+          <span>INITIALIZE FORENSIC ENGINE</span>
+          {/* Simple Alert Icon SVG */}
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
         </div>
 
-        {/* Info Body */}
-        <div className="space-y-6">
-          <p className="text-sm font-bold text-gray-700 leading-relaxed font-body">
-            To use this forensic tool, you must provide a valid Google Gemini API Key. Your key is stored locally in your browser and is never sent to our servers.
-          </p>
-
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-[10px] font-black font-mono uppercase tracking-widest text-gray-500">
-                <Lock size={12} strokeWidth={3} /> Input_System_Credentials
-              </label>
-              <input 
-                type="password"
-                placeholder="sk-..."
-                value={apiKeyInput}
-                onChange={(e) => setApiKeyInput(e.target.value)}
-                className="w-full border-[3px] border-black p-4 font-mono text-sm bg-gray-50 focus:bg-white focus:outline-none transition-colors rounded-none"
-              />
+        <div className="p-8">
+          
+          {/* Explanation Accordion */}
+          <details className="mb-6 border-2 border-gray-200 open:border-black open:bg-gray-50 group">
+            <summary className="cursor-pointer font-bold p-3 list-none flex justify-between items-center">
+              <span>Why do I need an API Key?</span>
+              <span className="group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <div className="p-3 pt-0 text-sm text-gray-600 leading-relaxed border-t-2 border-gray-200 group-open:border-black mt-2">
+              This forensic tool runs on Google's <strong>Gemini Pro</strong> model. To keep this tool free and private, we use your personal API quota (Free Tier available). Your key is stored <strong>ONLY</strong> in your browser's local storage and is never sent to our servers.
             </div>
+          </details>
 
-            {/* Accordion Explanation */}
-            <details className="border-[3px] border-black bg-gray-50 p-4 rounded-none group">
-              <summary className="font-black uppercase text-[10px] tracking-widest cursor-pointer list-none flex justify-between items-center select-none">
-                Why do I need an API Key?
-                <ChevronDown size={14} className="group-open:rotate-180 transition-transform" />
-              </summary>
-              <p className="text-[11px] font-bold mt-3 text-gray-600 leading-relaxed font-body italic">
-                This tool runs on Google's Gemini Pro model. To keep the tool free and private, we use your personal API quota. Your key is stored ONLY in your browser's local storage.
-              </p>
-            </details>
-
-            <div className="bg-white border-[3px] border-black p-4 space-y-3 shadow-[4px_4px_0px_#000]">
-              <a 
-                href="https://aistudio.google.com/app/apikey" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center justify-between text-black hover:text-[#42BE65] transition-colors font-black uppercase text-xs tracking-widest font-spacegrotesk"
-              >
-                Get a free key from AI Studio <ExternalLink size={14} strokeWidth={3} />
-              </a>
-            </div>
+          {/* Input Field with Lock Icon */}
+          <div className="mb-6 relative">
+             <label className="block font-bold text-sm mb-2">GOOGLE AI STUDIO KEY</label>
+             <div className="relative">
+               {/* Raw Lock SVG - No Import Needed */}
+               <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+               </div>
+               <input 
+                  type="password" 
+                  className="w-full border-[3px] border-black pl-10 pr-4 py-3 font-mono text-sm focus:outline-none focus:ring-4 focus:ring-green-400/50"
+                  placeholder="Paste your key here (sk-...)"
+                  value={inputKey}
+                  onChange={(e) => setInputKey(e.target.value)}
+               />
+             </div>
+             {error && <p className="text-red-600 text-xs font-bold mt-2 font-mono">ERROR: {error}</p>}
           </div>
-        </div>
 
-        {/* Action Button */}
-        <button 
-          onClick={handleSaveKey}
-          disabled={!apiKeyInput.trim() || isSaving}
-          className="w-full bg-[#42BE65] text-black font-spacegrotesk uppercase font-black py-5 mt-8 border-[3px] border-black hover:bg-black hover:text-[#42BE65] hover:shadow-[4px_4px_0px_#42BE65] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-3 text-lg disabled:opacity-50 disabled:grayscale rounded-none"
-        >
-          <Zap size={24} strokeWidth={3} />
-          {isSaving ? 'BOOTING...' : 'INITIALIZE_SYSTEM'}
-        </button>
+          {/* Actions */}
+          <div className="flex flex-col gap-3">
+            <button 
+              onClick={handleSave}
+              className="w-full bg-[#42BE65] border-[3px] border-black p-4 font-bold text-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-[4px_4px_0px_#000] transition-all uppercase tracking-wider"
+            >
+              Authenticate & Launch
+            </button>
+            
+            <a 
+              href="https://aistudio.google.com/app/apikey" 
+              target="_blank" 
+              rel="noreferrer"
+              className="text-center text-xs font-mono text-gray-500 underline hover:text-black"
+            >
+              Get a free key from Google AI Studio →
+            </a>
+          </div>
+
+        </div>
       </div>
     </div>
   );
