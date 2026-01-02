@@ -39,7 +39,7 @@ const Docs: React.FC = () => {
             </div>
           </div>
           <h2 className="text-4xl md:text-7xl font-black font-spacegrotesk uppercase italic tracking-tighter leading-none">
-            UX Forensic Auditor
+            Dark Patterns
           </h2>
           <div className="inline-block bg-black text-white px-4 py-1 font-mono text-[10px] tracking-[0.2em] font-bold uppercase rounded-none">
             // SYSTEM_STATUS: OPERATIONAL
@@ -56,7 +56,7 @@ const Docs: React.FC = () => {
           </div>
           <div className="bg-white border-[3px] border-black p-6 md:p-8 shadow-[8px_8px_0_0_#000] rounded-none">
             <p className="text-lg md:text-xl font-bold leading-relaxed mb-6 font-body">
-              <strong className="text-black">UX Forensic Auditor</strong> is a digital governance tool designed to deconstruct interfaces, identify deceptive design patterns ("Dark Patterns"), and enforce ethical compliance standards (EU AI Act, GDPR, DETOUR).
+              <strong className="text-black">Dark Patterns</strong> is a digital governance tool designed to deconstruct interfaces, identify deceptive design patterns ("Dark Patterns"), and enforce ethical compliance standards (EU AI Act, GDPR, DETOUR).
             </p>
             <p className="text-base font-bold text-gray-700 leading-relaxed font-body">
               Unlike standard accessibility tools, this auditor takes an adversarial approach—interrogating the UI for manipulative intent, hidden friction, and undisclosed AI behaviors.
